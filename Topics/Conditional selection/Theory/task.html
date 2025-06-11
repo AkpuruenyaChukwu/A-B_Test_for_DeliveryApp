@@ -1,0 +1,126 @@
+<div class="step-text">
+<p>Sometimes, we may want to access a piece of information stored in a particular row or a column instead of working with a whole DataFrame. The good news is that <code class="language-python">Pandas</code> allows us to do it. It is called <strong>indexing</strong>; we can select a particular subset of a<code class="language-python">DataFrame</code> or a <code class="language-python">Series</code> to work with it.</p>
+<h5 id="selecting">Selecting</h5>
+<p>Before we start, let's import <code class="language-python">pandas</code> (abbreviated as <code class="language-python">pd</code>) and create a DataFrame from a dictionary:</p>
+<pre><code class="language-python">import pandas as pd
+
+people = {
+    "first_name": ["Michael", "Michael", 'Jane', 'John'], 
+    "last_name": ["Jackson", "Jordan", 'Doe', 'Doe'], 
+    "email": ["mjackson@email.com", "mjordan@email.com", 'JaneDoe@email.com', 'JohnDoe@email.com'],
+    "birthday": ["29.09.1958", "17.02.1963", "15.03.1978", "12.05.1979"],
+    "height": [1.75, 1.98, 1.64, 1.8]
+}
+df = pd.DataFrame(people)
+df.head()
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-no-highlight">+----+--------------+-------------+--------------------+------------+----------+
+|    | first_name   | last_name   | email              | birthday   |   height |
+|----+--------------+-------------+--------------------+------------+----------|
+|  0 | Michael      | Jackson     | mjackson@email.com | 29.09.1958 |     1.75 |
+|  1 | Michael      | Jordan      | mjordan@email.com  | 17.02.1963 |     1.98 |
+|  2 | Jane         | Doe         | JaneDoe@email.com  | 15.03.1978 |     1.64 |
+|  3 | John         | Doe         | JohnDoe@email.com  | 12.05.1979 |     1.8  |
++----+--------------+-------------+--------------------+------------+----------+
+</code></pre>
+<p>We can select any subset of the DataFrame, for example, a single column:</p>
+<pre><code class="language-python">df['email']
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-no-highlight">0    mjackson@email.com
+1     mjordan@email.com
+2     JaneDoe@email.com
+3     JohnDoe@email.com
+Name: email, dtype: object</code></pre>
+<p>Now we have a <code class="language-python">Pandas</code> series with e-mails.</p>
+<p>It's also possible to use <code class="language-python">df.email</code>. It's called <strong>a dot syntax</strong>.<strong> </strong>We can use it for column names without spaces.</p>
+<p>We can also select a list of columns. A Python list requires additional square brackets:</p>
+<pre><code class="language-python">df[['first_name', 'last_name']]
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-no-highlight">+----+--------------+-------------+
+|    | first_name   | last_name   |
+|----+--------------+-------------|
+|  0 | Michael      | Jackson     |
+|  1 | Michael      | Jordan      |
+|  2 | Jane         | Doe         |
+|  3 | John         | Doe         |
++----+--------------+-------------+</code></pre>
+<p>Now we got a new DataFrame, consisting of these two columns.</p>
+<p>This command always returns a DataFrame, so, even if you select a list that consists of one column, you will return a DataFrame:</p>
+<pre><code class="language-python">df[['last_name']]
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-no-highlight">+----+-------------+
+|    | last_name   |
+|----+-------------|
+|  0 | Jackson     |
+|  1 | Jordan      |
+|  2 | Doe         |
+|  3 | Doe         |
++----+-------------+</code></pre>
+<h5 id="conditionals">Conditionals</h5>
+<p>If we need to introduce a condition<strong> </strong>to refine our choice, we can include it in square brackets:</p>
+<pre><code class="language-python">df[df.height &lt; 1.8]
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-no-highlight">+----+--------------+-------------+--------------------+------------+----------+
+|    | first_name   | last_name   | email              | birthday   |   height |
+|----+--------------+-------------+--------------------+------------+----------|
+|  0 | Michael      | Jackson     | mjackson@email.com | 29.09.1958 |     1.75 |
+|  2 | Jane         | Doe         | JaneDoe@email.com  | 15.03.1978 |     1.64 |
++----+--------------+-------------+--------------------+------------+----------+</code></pre>
+<p>As a result, we returned all<em> </em>columns and rows where the <code class="language-python">height</code> value is less than 1.8. Note that it's possible to use square brackets inside this statement, for example, <code class="language-python">df[df['height'] &lt; 1.8]</code>, but we don't need to do it here, as the column name doesn't contain any whitespaces.</p>
+<p>If we need to combine several conditions, we use the following Boolean operators:</p>
+<ul>
+<li><code class="language-python">&amp;</code> for "and"</li>
+<li><code class="language-python">|</code>(vertical line) for "or"</li>
+<li><code class="language-python">~</code> for "not"</li>
+<li><code class="language-python">&gt;</code>, <code class="language-python">&lt;</code>, <code class="language-python">&gt;=</code>, <code class="language-python">&lt;=</code>, <code class="language-python">==</code>, <code class="language-python">!=</code> for statement comparing.</li>
+</ul>
+<p>Please, don't forget about the parentheses:</p>
+<pre><code class="language-python">df[(df.first_name == 'Michael') &amp; (df.birthday == '17.02.1963')]
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-no-highlight">+----+--------------+-------------+-------------------+------------+----------+
+|    | first_name   | last_name   | email             | birthday   |   height |
+|----+--------------+-------------+-------------------+------------+----------|
+|  1 | Michael      | Jordan      | mjordan@email.com | 17.02.1963 |     1.98 |
++----+--------------+-------------+-------------------+------------+----------+</code></pre>
+<p>As a result, we returned the rows that match our pre-set condition: "the first name is Michael, birthday is on 17.02.1963".</p>
+<p>One more example with a bit more complex condition. Let's define the first name as Michael or John, height equal to or more than 1.8, and the last name should not be Jordan:</p>
+<pre><code class="language-python">df[((df.first_name == 'Michael') | (df.first_name == 'John'))
+   &amp; (df.height &gt;= 1.8)
+   &amp; (df.last_name != 'Jordan')]
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-no-highlight">+----+--------------+-------------+-------------------+------------+----------+
+|    | first_name   | last_name   | email             | birthday   |   height |
+|----+--------------+-------------+-------------------+------------+----------|
+|  3 | John         | Doe         | JohnDoe@email.com | 12.05.1979 |      1.8 |
++----+--------------+-------------+-------------------+------------+----------+</code></pre>
+<p>Note, that we don't use the line break character <code class="language-python">\</code>, since all new lines are put inside the square brackets.</p>
+<p>If we want to make our filtering <strong>exclusive</strong>, in other words, to select everything except the indicated parameters, we can add a tilde character <code class="language-python">~</code> and extra parenthesis:</p>
+<pre><code class="language-python">df[~(((df.first_name == 'Michael') | (df.first_name == 'John'))
+   &amp; (df.height &gt;= 1.8)
+   &amp; (df.last_name != 'Jordan'))]
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-no-highlight">+----+--------------+-------------+--------------------+------------+----------+
+|    | first_name   | last_name   | email              | birthday   |   height |
+|----+--------------+-------------+--------------------+------------+----------|
+|  0 | Michael      | Jackson     | mjackson@email.com | 29.09.1958 |     1.75 |
+|  1 | Michael      | Jordan      | mjordan@email.com  | 17.02.1963 |     1.98 |
+|  2 | Jane         | Doe         | JaneDoe@email.com  | 15.03.1978 |     1.64 |
++----+--------------+-------------+--------------------+------------+----------+</code></pre>
+<p>Voila!</p>
+<h5 id="conclusion">Conclusion</h5>
+<p>Now you know how to select:</p>
+<ul>
+<li>Separate columns or column lists with <code class="language-python">df[...]</code></li>
+<li>Separate columns by using dot syntax</li>
+<li>DataFrame subsets that fall under a set condition</li>
+</ul>
+<p>Of course, the list of various methods goes on. Feel free to experiment.</p>
+</div>

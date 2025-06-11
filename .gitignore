@@ -1,0 +1,16 @@
+# course config files
+*.yaml
+
+# gradle
+.gradle/
+build
+
+
+# idea config
+.idea
+
+# old stages
+/A B Test for Delivery App/*
+!/A B Test for Delivery App/task/
+/A B Test for Delivery App/task/*
+!/A B Test for Delivery App/task/main.py
